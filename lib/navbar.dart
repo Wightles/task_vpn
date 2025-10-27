@@ -4,11 +4,12 @@ import 'package:flutter/cupertino.dart';
 class FilterMenu extends StatefulWidget {
   final Function(String) onSearchChanged;
   final bool showNoResults;
-
+  final Function(int) onTabChanged;
   const FilterMenu({
     super.key,
     required this.onSearchChanged,
     required this.showNoResults,
+    required this.onTabChanged,
   });
 
   @override
@@ -18,6 +19,13 @@ class FilterMenu extends StatefulWidget {
 class _FilterMenuState extends State<FilterMenu> {
   int selectedIndex = 0;
   final List<String> tabs = ['Все', 'Мои', 'Избранные'];
+
+  void _onTabTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+    widget.onTabChanged(index);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +44,7 @@ class _FilterMenuState extends State<FilterMenu> {
                 final bool isSelected = selectedIndex == index;
                 return Expanded(
                   child: GestureDetector(
-                    onTap: () => setState(() => selectedIndex = index),
+                    onTap: () => _onTabTapped(index),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(vertical: 8),

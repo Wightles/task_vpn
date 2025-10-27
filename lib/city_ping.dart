@@ -7,6 +7,7 @@ class CityPingCard extends StatefulWidget {
   final String imageAsset;
   final double height;
   final Color borderColor;
+  final bool showDeleteText;
 
   const CityPingCard({
     Key? key,
@@ -15,6 +16,7 @@ class CityPingCard extends StatefulWidget {
     required this.imageAsset,
     this.height = 60,
     this.borderColor = const Color.fromARGB(255, 89, 95, 130),
+    this.showDeleteText = false,
   }) : super(key: key);
 
   @override
@@ -92,6 +94,18 @@ class _CityPingCardState extends State<CityPingCard> {
                 ],
               ),
             ),
+            if (widget.showDeleteText)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Text(
+                  'Удалить',
+                  style: TextStyle(
+                    color: Colors.red[400],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: GestureDetector(

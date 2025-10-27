@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_vpn/city_ping.dart';
 import 'package:task_vpn/navbar.dart';
+import 'package:task_vpn/scene_favorite.dart';
+import 'package:task_vpn/scene_my.dart';
 import 'package:flutter/cupertino.dart';
 
 class SceneAll extends StatefulWidget {
@@ -13,12 +15,152 @@ class SceneAll extends StatefulWidget {
 class _SceneAllState extends State<SceneAll> {
   String searchText = '';
   bool showNoResults = false;
+  int _currentTabIndex = 0; 
 
   void _onSearchChanged(String value) {
     setState(() {
       searchText = value;
       showNoResults = value.isNotEmpty;
     });
+  }
+
+  void _onTabChanged(int index) {
+    setState(() {
+      _currentTabIndex = index;
+    });
+  }
+
+  Widget _buildCurrentScene() {
+    switch (_currentTabIndex) {
+      case 0: 
+        return _buildAllScene();
+      case 1: 
+        return const SceneMy();
+      case 2: 
+        return const SceneFavorites();
+      default:
+        return _buildAllScene();
+    }
+  }
+
+  Widget _buildAllScene() {
+    return Column(
+      children: [
+        if (!showNoResults) ...[
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Мои точки доступа',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF2563EB),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                    ),
+                    child: const Text(
+                      'Добавить ключ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const CityPingCard(
+                  cityName: 'Берлин',
+                  ping: '120 мс',
+                  imageAsset: 'assets/images/test1.png',
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Германия',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const CityPingCard(
+                  cityName: 'Берлин',
+                  ping: '120 мс',
+                  imageAsset: 'assets/images/test1.png',
+                ),
+                const SizedBox(height: 6),
+                const CityPingCard(
+                  cityName: 'Берлин',
+                  ping: '120 мс',
+                  imageAsset: 'assets/images/test1.png',
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'США',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const CityPingCard(
+                  cityName: 'Берлин',
+                  ping: '120 мс',
+                  imageAsset: 'assets/images/test1.png',
+                ),
+                const SizedBox(height: 6),
+                const CityPingCard(
+                  cityName: 'Берлин',
+                  ping: '120 мс',
+                  imageAsset: 'assets/images/test1.png',
+                ),
+              ],
+            ),
+          ),
+        ] else ...[
+          const SizedBox(height: 5),
+          Center(
+            child: Column(
+              children: [
+                const Text(
+                  'Нет результатов',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                    'По вашему запросу серверов не найдено. Попробуйте изменить запрос или проверьте написание.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
   }
 
   @override
@@ -59,122 +201,10 @@ class _SceneAllState extends State<SceneAll> {
                 FilterMenu(
                   onSearchChanged: _onSearchChanged,
                   showNoResults: showNoResults,
+                  onTabChanged: _onTabChanged,
                 ),
                 const SizedBox(height: 24),
-                
-                if (!showNoResults) ...[
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Мои точки доступа',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: double.infinity,
-                          height: 60,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF2563EB),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.all(16),
-                            ),
-                            child: const Text(
-                              'Добавить ключ',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const CityPingCard(
-                          cityName: 'Берлин',
-                          ping: '120 мс',
-                          imageAsset: 'assets/images/test1.png',
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Германия',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const CityPingCard(
-                          cityName: 'Берлин',
-                          ping: '120 мс',
-                          imageAsset: 'assets/images/test1.png',
-                        ),
-                        const SizedBox(height: 6),
-                        const CityPingCard(
-                          cityName: 'Берлин',
-                          ping: '120 мс',
-                          imageAsset: 'assets/images/test1.png',
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'США',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const CityPingCard(
-                          cityName: 'Берлин',
-                          ping: '120 мс',
-                          imageAsset: 'assets/images/test1.png',
-                        ),
-                        const SizedBox(height: 6),
-                        const CityPingCard(
-                          cityName: 'Берлин',
-                          ping: '120 мс',
-                          imageAsset: 'assets/images/test1.png',
-                        ),
-                      ],
-                    ),
-                  ),
-                ] else ...[
-                  const SizedBox(height: 5),
-                  Center(
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Нет результатов',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Text(
-                            'По вашему запросу серверов не найдено. Попробуйте изменить запрос или проверьте написание.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.grey[400],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                _buildCurrentScene(),
               ],
             ),
           ),
