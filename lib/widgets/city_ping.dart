@@ -31,6 +31,50 @@ class CityPingCard extends StatefulWidget {
 class _CityPingCardState extends State<CityPingCard> {
   bool isSelected = false;
 
+  double _getAdaptivePadding(BuildContext context, [double basePadding = 8]) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 360) return basePadding * 0.7;
+    if (screenWidth < 400) return basePadding * 0.85;
+    if (screenWidth > 600) return basePadding * 1.5;
+    return basePadding;
+  }
+
+  double _getAdaptiveFontSize(BuildContext context, double baseSize) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final scale = screenWidth < 360 ? 0.85 : 
+                 screenWidth < 400 ? 0.9 :
+                 screenWidth > 600 ? 1.2 : 1.0;
+    return baseSize * scale;
+  }
+
+  double _getAdaptiveIconSize(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 360) return 16;
+    if (screenWidth > 600) return 32;
+    return 24;
+  }
+
+  double _getAdaptiveImageSize(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 360) return 28;
+    if (screenWidth > 600) return 44;
+    return 36;
+  }
+
+  double _getAdaptiveHeight(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    if (screenHeight < 700) return 50;
+    if (screenHeight > 1000) return 80;
+    return widget.height;
+  }
+
+  double _getAdaptiveBorderRadius(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 360) return 8;
+    if (screenWidth > 600) return 16;
+    return 12;
+  }
+
   @override
   Widget build(BuildContext context) {
     final vpnProvider = Provider.of<VpnProvider>(context);
@@ -45,29 +89,33 @@ class _CityPingCardState extends State<CityPingCard> {
       ),
     );
 
+    final bool isServerSelected = vpnProvider.selectedServerId == widget.serverId;
+
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isSelected = !isSelected;
-        });
+        if (isServerSelected) {
+          vpnProvider.deselectServer();
+        } else {
+          vpnProvider.selectServer(widget.serverId);
+        }
       },
       child: Container(
         width: double.infinity,
-        height: widget.height,
+        height: _getAdaptiveHeight(context),
         decoration: BoxDecoration(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(_getAdaptiveBorderRadius(context)),
           border: Border.all(
-            color: isSelected ? Colors.blue : widget.borderColor,
+            color: isServerSelected ? Colors.blue : widget.borderColor,
             width: 2,
           ),
         ),
         child: Row(
           children: [
-            const SizedBox(width: 12),
+            SizedBox(width: _getAdaptivePadding(context, 12)),
             Container(
-              width: 36,
-              height: 36,
+              width: _getAdaptiveImageSize(context),
+              height: _getAdaptiveImageSize(context),
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
               ),
@@ -78,13 +126,13 @@ class _CityPingCardState extends State<CityPingCard> {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[200],
-                      child: const Icon(Icons.location_city, size: 20),
+                      child: Icon(Icons.location_city, size: _getAdaptiveIconSize(context) * 0.8),
                     );
                   },
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: _getAdaptivePadding(context, 12)),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -92,8 +140,8 @@ class _CityPingCardState extends State<CityPingCard> {
                 children: [
                   Text(
                     widget.cityName,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: _getAdaptiveFontSize(context, 16),
                       fontWeight: FontWeight.w300,
                       color: Colors.white,
                     ),
@@ -101,27 +149,27 @@ class _CityPingCardState extends State<CityPingCard> {
                   Text(
                     widget.ping,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: _getAdaptiveFontSize(context, 12),
                       color: Colors.grey[600],
                     ),
                   ),
                 ],
               ),
             ),
-            if (widget.showDeleteText && !isSelected)
+            if (widget.showDeleteText && !isServerSelected)
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: _getAdaptivePadding(context, 8)),
                 child: Text(
                   'Удалить',
                   style: TextStyle(
                     color: Colors.red[400],
-                    fontSize: 14,
+                    fontSize: _getAdaptiveFontSize(context, 14),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.only(right: 16),
+              padding: EdgeInsets.only(right: _getAdaptivePadding(context, 16)),
               child: GestureDetector(
                 onTap: () {
                   vpnProvider.toggleFavorite(widget.serverId);
@@ -131,7 +179,7 @@ class _CityPingCardState extends State<CityPingCard> {
                   color: server.isFavorite
                       ? const Color.fromARGB(255, 204, 82, 204)
                       : const Color.fromARGB(255, 57, 54, 77),
-                  size: 24,
+                  size: _getAdaptiveIconSize(context),
                 ),
               ),
             ),

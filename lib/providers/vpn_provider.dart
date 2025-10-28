@@ -62,6 +62,7 @@ class VpnProvider with ChangeNotifier {
   ];
 
   final Set<String> _selectedMyServers = {};
+  String? _selectedServerId;
 
   List<VpnServer> get servers => _servers;
   
@@ -73,8 +74,20 @@ class VpnProvider with ChangeNotifier {
 
   Set<String> get selectedMyServers => _selectedMyServers;
 
+  String? get selectedServerId => _selectedServerId;
+
   bool isServerSelected(String serverId) {
     return _selectedMyServers.contains(serverId);
+  }
+
+  void selectServer(String serverId) {
+    _selectedServerId = serverId;
+    notifyListeners();
+  }
+
+  void deselectServer() {
+    _selectedServerId = null;
+    notifyListeners();
   }
 
   void toggleServerSelection(String serverId) {
