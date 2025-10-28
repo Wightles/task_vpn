@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:task_vpn/scene_all.dart';
+import 'package:provider/provider.dart';
+import 'package:task_vpn/scene/scene_all.dart';
+import 'package:task_vpn/providers/vpn_provider.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => VpnProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,6 +19,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'VPN App',
+      theme: ThemeData.dark(),
       home: const SceneAll(),
     );
   }

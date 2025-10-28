@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_vpn/city_ping.dart';
+import 'package:task_vpn/providers/vpn_provider.dart';
 
 class SceneMy extends StatefulWidget {
   const SceneMy({super.key});
@@ -11,6 +13,9 @@ class SceneMy extends StatefulWidget {
 class _SceneMyState extends State<SceneMy> {
   @override
   Widget build(BuildContext context) {
+    final vpnProvider = Provider.of<VpnProvider>(context);
+    final myServers = vpnProvider.myServers;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -38,25 +43,18 @@ class _SceneMyState extends State<SceneMy> {
             ),
           ),
           const SizedBox(height: 10),
-          const CityPingCard(
-            cityName: 'Берлин',
-            ping: '120 мс',
-            imageAsset: 'assets/images/test1.png',
-          ),
-          const SizedBox(height: 6),
-          const CityPingCard(
-            cityName: 'Берлин',
-            ping: '120 мс',
-            imageAsset: 'assets/images/test1.png',
-            showDeleteText: true,
-          ),
-          const SizedBox(height: 6),
-          const CityPingCard(
-            cityName: 'Берлин',
-            ping: '120 мс',
-            imageAsset: 'assets/images/test1.png',
-            showDeleteText: true,
-          ),
+          ...myServers.map((server) => Column(
+            children: [
+              CityPingCard(
+                serverId: server.id,
+                cityName: server.cityName,
+                ping: server.ping,
+                imageAsset: server.imageAsset,
+                showDeleteText: true,
+              ),
+              const SizedBox(height: 6),
+            ],
+          )).toList(),
         ],
       ),
     );

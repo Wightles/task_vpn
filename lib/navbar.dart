@@ -19,12 +19,15 @@ class FilterMenu extends StatefulWidget {
 class _FilterMenuState extends State<FilterMenu> {
   int selectedIndex = 0;
   final List<String> tabs = ['Все', 'Мои', 'Избранные'];
+  final TextEditingController _searchController = TextEditingController();
 
   void _onTabTapped(int index) {
     setState(() {
       selectedIndex = index;
+      _searchController.clear();
     });
     widget.onTabChanged(index);
+    widget.onSearchChanged('');
   }
 
   @override
@@ -34,10 +37,10 @@ class _FilterMenuState extends State<FilterMenu> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Container(
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.zero,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 47, 65, 85),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
               children: List.generate(tabs.length, (index) {
@@ -45,21 +48,25 @@ class _FilterMenuState extends State<FilterMenu> {
                 return Expanded(
                   child: GestureDetector(
                     onTap: () => _onTabTapped(index),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Container(
+                      margin: const EdgeInsets.all(1),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFF2563EB)
                             : Colors.transparent,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       child: Center(
-                        child: Text(
-                          tabs[index],
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.white,
-                            fontWeight: FontWeight.w500,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            tabs[index],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -70,9 +77,7 @@ class _FilterMenuState extends State<FilterMenu> {
             ),
           ),
         ),
-        
         const SizedBox(height: 10),
-        
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Container(
@@ -82,6 +87,7 @@ class _FilterMenuState extends State<FilterMenu> {
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: TextField(
+              controller: _searchController,
               onChanged: widget.onSearchChanged,
               style: const TextStyle(
                 color: Colors.white,
@@ -96,12 +102,25 @@ class _FilterMenuState extends State<FilterMenu> {
                 hintText: 'Поиск',
                 hintStyle: TextStyle(
                   color: Colors.white.withOpacity(0.6),
-                  fontWeight: FontWeight.normal,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w200,
                 ),
                 prefixIcon: Icon(
                   CupertinoIcons.search,
                   color: Colors.white.withOpacity(0.6),
                 ),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white.withOpacity(0.6),
+                        ),
+                        onPressed: () {
+                          _searchController.clear();
+                          widget.onSearchChanged('');
+                        },
+                      )
+                    : null,
               ),
             ),
           ),
